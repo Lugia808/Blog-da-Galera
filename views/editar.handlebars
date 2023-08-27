@@ -1,0 +1,26 @@
+<div class="w-100 d-flex flex-column justify-content-center align-items-center" style="height: 100vh; justify-content-center"> 
+
+
+<div class="bg-secondary d-flex flex-column align-items-center w-50 p-3" style="border-radius: 20px;">
+
+
+<h1 class="title text-center bg-dark container-fluid rounded-3">Edite seu post</h1>
+
+{{#each posts}}
+
+<form action="/editar/{{id}}" method="post">
+
+<div class="form-group">
+<input class="form-control mb-2 mt-2" name="titulo1" type="text"  value="{{titulo}}">
+<textarea class="form-control" name="conteudo1" cols="30" rows="10" >{{conteudo}}</textarea>
+<button type="submit" class="btn btn-danger mt-2">Editar</button>
+</div>
+
+</form>
+
+{{/each}}
+
+
+</div>
+
+</div>

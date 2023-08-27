@@ -3,6 +3,7 @@ const app = express();
 const handlebars = require("express-handlebars");
 const bodyParser = require("body-parser");
 const Post = require("./models/Post");
+const { sequelize, Sequelize } = require("./models/Db");
 
 //Template Engine - Handlebars
 app.engine(
@@ -26,11 +27,27 @@ app.use(bodyParser.json());
 //Rotas
 
 
-app.get('/', function(req, res){
-    Post.findAll({order: [['id', 'DESC']]}).then(function(posts){
-        res.render('home', {posts: posts})        
+app.get('/', function (req, res) {
+  let dataFormatada;
+
+  sequelize
+    .query(
+      'SELECT DATE_FORMAT(createdAt, "%d/%m/%Y %H:%i") as data_formatada FROM postagens',
+      { type: Sequelize.QueryTypes.SELECT }
+    )
+    .then(function (results) {
+      dataFormatada = results[0].data_formatada;
+      return Post.findAll({ order: [['id', 'DESC']] });
     })
-})
+    .then(function (posts) {
+      res.render('home', { dataFormatada: dataFormatada, posts: posts });
+    })
+    .catch(function (error) {
+      console.error(error);
+      res.status(500).send('Erro interno do servidor');
+    });
+});
+
 
 
 app.get("/cadastro", function (req, res) {
@@ -50,28 +67,86 @@ app.post("/postagem", function (req, res) {
     });
 });
 
-app.get('/deletar/:id', function(req, res){
-  Post.destroy({where: {'id': req.params.id}}).then(function(){
+app.get('/deletar/:id', function (req, res) {
+  Post.destroy({ where: { 'id': req.params.id } }).then(function () {
     res.redirect('/')
   })
-  .catch(function(erro){
-    console.log('Esta postagem não exite ' + erro)
-  })
-    
-  }
-)
+    .catch(function (erro) {
+      console.log('Esta postagem não exite ' + erro)
+    })
 
-app.get('/editar/:id', function(req, res){
-  Post.destroy({where: {'id': req.params.id}}).then(function(){
-    res.redirect('/cadastro')
-  })
-  .catch(function(erro){
-    console.log('Esta postagem não exite ' + erro)
-  })
-    
-  }
+}
 )
+// Rota GET para renderizar a página de edição
+app.get('/editar/:id', function (req, res) {
+  Post.findAll({where: { id : req.params.id}})
+    .then(function (posts) {
+      res.render('editar', { posts: posts });
+    })
+    .catch(function (error) {
+      console.log('ixi deu erro;', error)
+    });
+});
 
+//Aprender como puxar o id de acordo com o item
+
+app.get("/teste", function (req, res) {
+  const id = sequelize.query('select id from postagens',{type: Sequelize.QueryTypes.SELECT})
+  sequelize
+    .query(
+      'SELECT DATE_FORMAT(createdAt, "%d/%m/%Y %H:%i") as data_formatada FROM postagens where id = 32',
+      { type: Sequelize.QueryTypes.SELECT }
+    ).then()
+    .then(function (results) {
+      const dataFormatadaArray = results.map(result => result.data_formatada);
+      res.render("teste", { dataFormatadaArray: dataFormatadaArray, id : id });
+    })
+    .catch(function (error) {
+      console.log("Ocorreu o seguinte erro: " + error);
+      res.status(500).send("Erro interno do servidor");
+    });
+});
+
+/*app.get("/teste", function (req, res) {
+  sequelize
+    .query(
+      'SELECT DATE_FORMAT(createdAt, "%d/%m/%Y %H:%i") as data_formatada FROM postagens where id = ??',
+      { type: Sequelize.QueryTypes.SELECT }
+    )
+    .then(function (results) {
+      const dataFormatadaArray = results.map(result => result.data_formatada);
+      
+      return sequelize.query('SELECT id FROM postagens', { type: Sequelize.QueryTypes.SELECT });
+    })
+    .then(function (idResults) {
+      const id = idResults[0].id; //???
+      res.render("teste", {id: id});
+    })
+    .catch(function (error) {
+      console.log("Ocorreu o seguinte erro: " + error);
+      res.status(500).send("Erro interno do servidor");
+    });
+});
+*/
+
+
+// Rota POST para processar a edição
+app.post('/editar/:id', function (req, res) {
+  Post.update(
+    {
+      titulo: req.body.titulo1,
+      conteudo: req.body.conteudo1,
+      updatedAt: sequelize.literal('CURRENT_TIMESTAMP')
+    },
+    { where: { id: req.params.id } }
+  )
+    .then(function () {
+      res.redirect('/')
+    })
+    .catch(function (error) {
+      console.log('deu erro: ', error)
+    });
+});
 
 app.listen(8081, function () {
   console.log("Servidor rodando na porta 8081");
