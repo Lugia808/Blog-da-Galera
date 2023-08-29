@@ -25,14 +25,21 @@ const { sequelize, Sequelize } = require("./models/Db");
 //Rotas
 
 app.get('/', function (req, res) {
-  let dataFormatada;
+  /*let dataFormatada;
   var dataAntes = req.body.dataAntes
-  dataFormatada = new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(dataAntes)
-  Post.findAll({order: [['id', 'DESC']]})
+  dataFormatada = new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(dataAntes)*/
+
+//Createdat where id = req.body.nome10
+
+  //Post.findAll({attributes})
+
+  Post.findAll({
+    order: [['id', 'DESC']]//,
+    //attributes: ['createdAt']
+  
+  })
 .then(function (posts) {
-      res.render('home', {posts: posts, dataFormatada : dataFormatada});
-    })  .then(function(){
-      console.log()
+      res.render('home', {posts: posts});
     })
     .catch(function (error) {
       console.error(error);
@@ -82,7 +89,7 @@ app.get("/teste", function (req, res) {
   const id = sequelize.query('select id from postagens', { type: Sequelize.QueryTypes.SELECT })
   sequelize
     .query(
-      'SELECT DATE_FORMAT(createdAt, "%d/%m/%Y %H:%i") as data_formatada FROM postagens where id = 32',
+      'SELECT DATE_FORMAT(createdAt, "%d/%m/%Y") as data_formatada FROM postagens where id = 32',
       { type: Sequelize.QueryTypes.SELECT }
     ).then()
     .then(function (results) {
