@@ -1,7 +1,7 @@
-<nav class="navbar bg-info">
+<nav class="navbar bg-dark">
     <div class="container-fluid">
         <div class="d-flex justify-content-start align-items-center">
-            <a class="navbar-brand">BlogZIN</a>
+            <a class="navbar-brand text-white font-weight-bold">BlogZIN</a>
         </div>
         <form class="d-flex" role="search">
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -10,24 +10,29 @@
     </div>
 
 </nav>
-    <div class="navbar bg-primary container-fluid d-flex justify-content-center align-items-center">
-        <a href="/cadastro"> <button class="btn btn-dark btn-sm">Criar postagem</button></a>
-    </div>
+<div class="navbar bg-primary container-fluid d-flex justify-content-center align-items-center">
+    <a href="/cadastro"> <button class="btn btn-dark btn-sm">Criar postagem</button></a>
+</div>
 
 {{#each posts}}
 <div class="d-flex justify-content-center align-items-center flex-column">
-<div class="bg-secondary mt-5 p-3 rounded-2" style="width: 80vh;">
-<h1 class="is-size-3 text-center mt-3 blockquote lead h4">{{titulo}}</h1>
-<div class="d-flex justify-content-center">
-    <div class="w-75 d-flex align-items-center rounded-1 text-wrap h-auto p-2 mb-3" style="background-color: rgb(210, 210, 210)">
-        <p class="mb-0" style="color: black;">{{conteudo}}</p>
+    <div class="bg-secondary mt-5 p-3 rounded-2" style="width: 80vh;">
+
+        <div class="d-flex justify-content-center mt-3" id="teste">
+            <div class="w-75 d-flex align-items-center rounded-1 text-wrap h-auto p-3 flex-column"
+                style="background-color: rgb(210, 210, 210)">
+                <h1 class="mt-1 h5 text-black mb-3 align-self-start">{{titulo}}</h1>
+                <hr class="bg-dark">
+                <h6 class="mb-0 lead h6" style="color: black;">{{conteudo}}</h6>
+            </div>
+        </div>
+        <h1>{{id}}</h1>
+        <p name="dataAntes" >{{createdAt}}</p>
+        <p name="dataFormatada">{{dataFormatada}}</p>
+        <a href="/editar/{{id}}"> <button class="btn btn-primary">Editar</button></a>
+        <a href="/deletar/{{id}}" class="is-flex is-justify-content-flex-end" style="margin-right: 4vh;">
+            <button class="btn btn-danger">Deletar</button></a>
+
     </div>
 </div>
-
-<a href="/editar/{{id}}"> <button class="btn btn-primary">Editar</button></a>
-<a href="/deletar/{{id}}" class="is-flex is-justify-content-flex-end" style="margin-right: 4vh;"> <button
-        class="btn btn-danger">Deletar</button></a>
 {{/each}}
-<p class="lead" >{{dataFormatada}}</p>
-</div>
-</div>
