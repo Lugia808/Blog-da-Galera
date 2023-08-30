@@ -24,23 +24,20 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 //Rotas
 
+//  dataFormatada = new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(dataAntes)
+
+//get1
 app.get('/', (req, res) => {
-
-  Post.findAll({
-    attributes: {
-      include: [
-        [sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%d/%m/%Y'), 'fmtCreatedAt'], 
-        [
-          sequelize.fn('timestampdiff', sequelize.literal('day'), sequelize.col('createdAt'), sequelize.fn('NOW')),
-          'diferenca'
-        ]
+  Promise.all([
+    Post.findAll({
+      attributes: [
+        'createdAt',
+        [sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%d/%m/%Y'), 'formattedCreatedAt']
       ]
-
-    },
-    order: [['id', 'DESC']]
-  }).then((posts) => {
-    //console.log(posts)
-    res.render('home', { posts: posts });
+    }),
+    Post.findAll({ order: [['id', 'DESC']] })
+  ]).then(([data, posts]) => {
+    res.render('home', { posts: posts, data: data });
   })
     .catch(function (error) {
       console.error(error);

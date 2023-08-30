@@ -26,12 +26,20 @@
                 <h6 class="mb-0 lead h6" style="color: black;">{{conteudo}}</h6>
             </div>
         </div>
-        <h1>{{id}}</h1>
-        <p name="dataAntes" >{{createdAt}}</p>
-        <p name="dataFormatada">{{dataFormatada}}</p>
-        <a href="/editar/{{id}}"> <button class="btn btn-primary">Editar</button></a>
-        <a href="/deletar/{{id}}" class="is-flex is-justify-content-flex-end" style="margin-right: 4vh;">
-            <button class="btn btn-danger">Deletar</button></a>
+        <div class="d-flex justify-content-between" style="height: 100%;">
+            <div class="align-self-center">
+                <a href="/editar/{{id}}"> <button class="btn btn-primary">Editar</button></a>
+                <a href="/deletar/{{id}}" class="is-flex is-justify-content-flex-end align-items-center"
+                    style="margin-right: 4vh;">
+                    <button class="btn btn-danger">Deletar</button></a>
+            </div>
+            <div class="bg-info d-flex justify-content-center flex-column align-items-center rounded-3 m-2"
+                style="width: 30%;">
+                <p class="mb-0 mt-2" style="font-size: 100% !important;">{{dataValues.fmtCreatedAt}}</p>
+                <p class="mb-1" style="font-size: 100% !important;">Postado há {{dataValues.diferenca}} dia(s)</p>
+            </div>
+        </div>
+
 
     </div>
 </div>
